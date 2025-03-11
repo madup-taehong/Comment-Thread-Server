@@ -17,6 +17,18 @@ comment_router = APIRouter(prefix=f"{settings.API_VERSION}/comments", tags=["Com
 def create_comment(comment_data: CommentCreate, current_user: User = Depends(get_current_user)):
     """
     댓글 작성 api
+
+    input:
+        comment_data: 댓글 생성 데이터
+        current_user: 현재 인증된 사용자 (로그인 필요)
+
+    output:
+        CommentResponse: 생성된 댓글 정보
+
+    error:
+        - 토픽이 존재하지 않는 경우 404 에러
+        - 부모 댓글이 존재하지 않는 경우 404 에러
+        - 댓글 깊이가 2를 초과하는 경우 400 에러
     """
     with db.session() as session:
         topic = session.query(Topic).filter(Topic.id == comment_data.topic_id).first()

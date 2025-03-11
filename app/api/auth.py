@@ -20,7 +20,17 @@ auth_router = APIRouter(prefix=f"{settings.API_VERSION}/auth", tags=["Authentica
 def register(user_data: UserCreate):
     """
     회원가입 api
+
+    input:
+        user_data: 사용자 등록 정보
+
+    output:
+        UserResponse: 생성된 사용자 정보
+
+    error:
+        이미 등록된 이메일인 경우 400 에러 발생
     """
+
     with db.session() as session:
         # 이메일 중복 확인
         db_user = session.query(User).filter(User.email == user_data.email).first()
@@ -45,6 +55,15 @@ def register(user_data: UserCreate):
 def login(login_data: OAuth2PasswordRequestForm = Depends()):
     """
     로그인 api
+
+    input:
+        login_data: 로그인 정보
+
+    output:
+        Token: 액세스 토큰 정보
+
+    error:
+        사용자가 존재하지 않는 경우 404, 비밀번호가 일치하지 않는 경우 401
     """
     with db.session() as session:
         # 사용자 확인

@@ -19,6 +19,13 @@ topic_router = APIRouter(prefix=f"{settings.API_VERSION}/topics", tags=["Topics"
 def create_topic(topic_data: TopicCreate, current_user: User = Depends(get_current_user)):
     """
     토픽 생성 api
+
+    input:
+        topic_data: 토픽 생성 데이터
+        current_user: 현재 인증된 사용자(로그인 필요)
+
+    output:
+        TopicResponse: 생성된 토픽 정보
     """
     with db.session() as session:
         new_topic = Topic(title=topic_data.title, content=topic_data.content, user_id=current_user.id)
@@ -34,6 +41,14 @@ def create_topic(topic_data: TopicCreate, current_user: User = Depends(get_curre
 def get_topics(pagination: PaginationParams = Depends()):
     """
     토픽 조회 api
+
+    input:
+        pagination: 페이지네이션관련 파라미터
+
+    output:
+        Union[PaginationResponse[TopicResponse], CursorResponse[TopicResponse]]:
+            - 커서가 있는 경우: 커서 기반 페이지네이션 응답
+            - 커서가 없는 경우: 오프셋 기반 페이지네이션 응답
     """
     with db.session() as session:
         # 커서가 있는 경우 커서 기반으로 페이지네이션
@@ -83,6 +98,15 @@ def get_topics(pagination: PaginationParams = Depends()):
 def get_topic(topic_id: int):
     """
     타겟 토픽 조회
+
+    input:
+        topic_id: 조회할 토픽의 ID
+
+    output:
+        TopicResponse: 조회된 토픽 정보
+
+    error:
+        토픽이 존재하지 않는 경우 404 에러 발생
     """
     with db.session() as session:
         topic = session.query(Topic).filter(Topic.id == topic_id).first()

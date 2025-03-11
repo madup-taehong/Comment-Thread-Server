@@ -4,6 +4,7 @@ from sqlalchemy.sql import func
 
 from app.db.database import Base
 
+
 class Topic(Base):
     __tablename__ = "topics"
 

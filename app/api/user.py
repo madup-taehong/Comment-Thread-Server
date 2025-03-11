@@ -13,6 +13,15 @@ user_router = APIRouter(prefix=f"{settings.API_VERSION}/users", tags=["Users"])
 def get_user(user_id: int):
     """
     사용자 조회 api
+
+    input:
+        user_id: 조회할 사용자의 ID
+
+    output:
+        UserResponse: 조회된 사용자 정보
+
+    error:
+        사용자가 존재하지 않는 경우 404 에러 발생
     """
     with db.session() as session:
         user = session.query(User).filter(User.id == user_id).first()
