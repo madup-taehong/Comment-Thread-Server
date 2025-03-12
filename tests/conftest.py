@@ -83,23 +83,6 @@ async def _set_up_test_db():
 
 
 @pytest_asyncio.fixture(scope="session")
-async def db():
-    """테스트 DB 세팅"""
-    # DB 연결 정보 설정
-    db = SqlAlchemy(Base)
-    db.init_db(database_info=DBConnection(SQLALCHEMY_DATABASE_URL=TEST_DATABASE_URL))
-
-    # 테스트 DB가 없다면 생성
-    if not database_exists(TEST_DATABASE_URL):
-        create_database(TEST_DATABASE_URL)
-
-    # 테스트 DB 테이블 생성
-    Base.metadata.create_all(db.engine())
-
-    yield db
-
-
-@pytest_asyncio.fixture(scope="session")
 async def client():
     """
     서버 생성 함수
