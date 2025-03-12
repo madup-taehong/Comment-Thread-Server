@@ -6,7 +6,6 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.db.database import db
@@ -26,10 +25,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
     output:
         str: 생성된 JWT 토큰
-
-    참고자료:
-        - python-jose 문서: https://python-jose.readthedocs.io/en/latest/jwt/api.html
-        - JWT 표준 규격: https://datatracker.ietf.org/doc/html/rfc7519
     """
     to_encode = data.copy()
     if expires_delta:
@@ -54,9 +49,6 @@ def verify_token(token: str, credentials_exception):
 
     error:
         credentials_exception: 토큰이 유효하지 않을 경우 발생
-
-    참고자료:
-        - python-jose 문서: https://python-jose.readthedocs.io/en/latest/jwt/api.html#jose.jwt.decode
     """
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
@@ -81,9 +73,6 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 
     error:
         HTTPException: 인증 정보가 유효하지 않을 경우 발생
-
-    참고자료:
-        - FastAPI OAuth2 문서: https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
     """
     with db.session() as session:
         credentials_exception = HTTPException(
