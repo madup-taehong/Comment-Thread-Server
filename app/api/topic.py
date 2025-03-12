@@ -56,7 +56,7 @@ def get_topics(pagination: PaginationParams = Depends()):
             query = session.query(Topic).order_by(Topic.id)
 
             if pagination.cursor > 0:
-                query = query.filter(Topic.id > pagination.cursor)
+                query = query.filter(Topic.id >= pagination.cursor)
 
             # limit보다 하나 더 조회 (나중에 next_cursor를 넣어주기 위함)
             items = query.limit(pagination.limit + 1).all()
